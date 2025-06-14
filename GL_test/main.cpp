@@ -2,11 +2,12 @@
 #include <iostream>
 #include <GL/glew.h> //glfwより前に
 #include <GLFW/glfw3.h>
-
+//-------------------------------------
 //プログラムオブジェクトを作成
 //vsrc : バーテックスシェーダのソース文字列
 //fsrc : フラグメントシェーダのソース文字列
 
+//-------------------------------------
 GLint createProgram(const char* vsrc, const char* fsrc) //一連の処理をする関数
 {
 	//空のプログラムオブジェクトを作成
@@ -37,10 +38,8 @@ GLint createProgram(const char* vsrc, const char* fsrc) //一連の処理をする関数
 	return program;
 }
 
-
-
-
-
+//-------------------------------------
+// GLFW main処理
 int main()
 {
 	//(1)GLFWを初期化する（このプログラムで OpenGL を使用するための準備）
@@ -52,25 +51,27 @@ int main()
 		return 1;
 	}
 
-	//プログラム終了時の処理を登録する
+	//プログラム正常終了時の処理を登録
 	atexit(glfwTerminate);
 
-	//(3.2以降の機能を使いたい)バージョンとプロファイルを指定
+//---------------
 	//ウィンドウの特性（ヒント）を設定
-	//バージョン指定
+	//バージョン指定（3.2）
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-	//GL_TRUE → 前方互換プロファイル（古い機能を削除）
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	//GLFW_OPENGL_CORE_PROFILE → モダンな OpenGL（シェーダーベース）
+
+	//macでのみ必要
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); 
+	//プロファイル指定（Core Profile）
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+//---------------
 	//(2)ウィンドウを作成する
 	GLFWwindow *const window = glfwCreateWindow(640, 480, "window_name", NULL, NULL);
-	//constにしちゃってるので後から window に別の GLFWwindow* を代入したい場合に問題が出る。
+	//constにしてるので後から window に別の GLFWwindow* を代入したい場合に問題が出る
 	if (window == NULL)
 	{
-		//windowのポインタ(情報そのもの，ウィンドウの構造体の先頭ポインタ)が作成できなかったようだね
+		//windowのポインタ(情報そのもの，ウィンドウの構造体の先頭ポインタ)作成に失敗した場合
 		std::cerr << "can't create GLFW window...." << std::endl;
 		//glfwTerminate(); //取得したメモリ開放
 		return 1;
@@ -78,24 +79,24 @@ int main()
 
 	//作成したウィンドウをカレント（OpenGLの処理対象）にする
 	glfwMakeContextCurrent(window);
-
+	//---------------
 	//GLEW(ドライバに関数ポインタの取得手続きをしてくれる)はコンテキストに依存
-	//有効なコンテキストを決めたここで初期化しよう
+	//有効なコンテキストを決めたためここで初期化
 	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK)
 	{
-		//GLEWの初期化に失敗した
+		//GLEWの初期化に失敗
 		std::cerr << "can't initialize GLEW" << std::endl;
 		return 1;
 	}
-
-
+	//---------------
 	//背景色を指定
 	glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 
 	//ウィンドウ作成後のV-sync設定(ウィンドウのfpsに合わせる)
 	glfwSwapInterval(1);
 
+//---------------
 	//(3) ウィンドウが開いている間処理を繰り返す
 	while (glfwWindowShouldClose(window) == GL_FALSE)
 	{
@@ -112,6 +113,7 @@ int main()
 		
 
 		//イベントのチェック
-		glfwWaitEvents(); //OSからイベントメッセージくるまで描画停止(発生->対応するコールバックを発火->while描画先頭へ)
+		glfwWaitEvents(); //OSからイベントメッセージ来るまで描画停止(発生->対応するコールバックを発火->while描画先頭へ)
 	}
 }
+//-------------------------------------
