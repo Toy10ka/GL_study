@@ -1,0 +1,8 @@
+#version 150 core
+
+out vec4 fragment; //出力画素をoutを指定.次のパイプ(カラーバッファ)へ
+void main()
+{
+	fragment = vec4(1.0, 0.0, 0.0, 1.0); //RGBAを持ったフラグメントをoutへ
+	                                     //vec4()は四つの数をvec4へキャスト
+}
