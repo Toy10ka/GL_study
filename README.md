@@ -1,4 +1,4 @@
-# GL_solution_test
+# GL_study
 
 このリポジトリは、OpenGL 学習用のプロジェクトです。Visual Studio を用いて GLFW と GLEW を利用する設定になっています。
 
