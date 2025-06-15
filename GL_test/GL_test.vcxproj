@@ -131,7 +131,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="toGLFW.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="point.flag" />

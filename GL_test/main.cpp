@@ -1,120 +1,143 @@
-#include <cstdlib> //atexit
+ï»¿#include <cstdlib> // atexit
 #include <iostream>
-#include <GL/glew.h> //glfw‚æ‚è‘O‚É
+#include <GL/glew.h> // glfwã‚ˆã‚Šå‰ã«
 #include <GLFW/glfw3.h>
 //-------------------------------------
-//ƒvƒƒOƒ‰ƒ€ƒIƒuƒWƒFƒNƒg‚ðì¬
-//vsrc : ƒo[ƒeƒbƒNƒXƒVƒF[ƒ_‚Ìƒ\[ƒX•¶Žš—ñ
-//fsrc : ƒtƒ‰ƒOƒƒ“ƒgƒVƒF[ƒ_‚Ìƒ\[ƒX•¶Žš—ñ
+// ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œæˆ
+// vsrc : ãƒãƒ¼ãƒ†ãƒƒã‚¯ã‚¹ã‚·ã‚§ãƒ¼ãƒ€ã®ã‚½ãƒ¼ã‚¹æ–‡å­—åˆ—
+// fsrc : ãƒ•ãƒ©ã‚°ãƒ¡ãƒ³ãƒˆã‚·ã‚§ãƒ¼ãƒ€ã®ã‚½ãƒ¼ã‚¹æ–‡å­—åˆ—
 
-//-------------------------------------
-// ‚±‚±‚Ìgl~~‚Ì‚Ù‚Æ‚ñ‚Ç‚ªEW‚ÌŠg’£ŠÖ”‚È‚Ì‚ÅC‚ ‚Æ‚ÅEW‰Šú‰»Œã‚É’u‚­
-GLint createProgram(const char* vsrc, const char* fsrc) //ˆê˜A‚Ìˆ—‚ð‚·‚éŠÖ”
+// ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆä½œæˆé–¢æ•° (ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆç¢ºå®šå¾Œã«å‘¼ã¶)
+GLint createProgram(const char* vsrc, const char* fsrc) 
 {
-	//‹ó‚ÌƒvƒƒOƒ‰ƒ€ƒIƒuƒWƒFƒNƒg‚ðì¬
+	//(1) ç©ºã®ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œæˆ
 	const GLint program = glCreateProgram();
 
-	if (vsrc != NULL) {
-		//ƒo[ƒeƒbƒNƒXƒVƒF[ƒ_‚ÌƒVƒF[ƒ_ƒIƒuƒWƒFƒNƒg‚ðì‚ë‚¤ivsrc‚ ‚é‚È‚çj
-		const GLint vobj = glCreateShader(GL_VERTEX_SHADER); //‹ó‚ðì‚é
-		
-		glShaderSource(vobj, 1, &vsrc, NULL); //•¶Žš—ñ‚Æ‚µ‚Äƒ\[ƒX‚ðŒ‹‚Ñ‚Â‚¯‚é
-		glCompileShader(vobj); //Œ‹‚Ñ‚Â‚¯‚½ƒVƒF[ƒ_ƒIƒuƒWƒFƒNƒg(‚Ìƒ\[ƒX)‚ðƒRƒ“ƒpƒCƒ‹
+	// å€‹ã€…ã®ã‚·ã‚§ãƒ¼ãƒ€ã‚’ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«
+	if (vsrc != NULL) { 
+		//(2) ç©ºã®ã‚·ã‚§ãƒ¼ãƒ€ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆä½œæˆ
+		const GLint vobj = glCreateShader(GL_VERTEX_SHADER); 
 
-		//ƒvƒƒOƒ‰ƒ€ƒIƒuƒWƒFƒNƒg‚ÉVƒVƒF[ƒ_ƒIƒuƒWƒFƒNƒg‚ð‘g‚Ýž‚Þ
+		//(3) GLSLæ–‡å­—åˆ—ã‚½ãƒ¼ã‚¹ã‚’çµã³ã¤ã‘ã‚‹
+		glShaderSource(vobj, 1, &vsrc, NULL);
+
+		//(4) ã‚·ã‚§ãƒ¼ãƒ€ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®GLSLã‚’ã‚³ãƒ³ãƒ‘ã‚¤ãƒ« (ãƒ‰ãƒ©ã‚¤ãƒãŒ)
+		glCompileShader(vobj); 
+
+		//(5) ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«ã‚·ã‚§ãƒ¼ãƒ€ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’çµ„ã¿è¾¼ã‚€
 		glAttachShader(program, vobj);
-		glDeleteShader(vobj); //Detach‚³‚ê‚½‚çƒVƒF[ƒ_ƒIƒuƒWƒFƒNƒg‚Ííœ‚³‚ê‚é‚æ‚¤‚É
+		glDeleteShader(vobj); // Detachã•ã‚ŒãŸã‚‰ã‚·ã‚§ãƒ¼ãƒ€ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã¯å‰Šé™¤ã•ã‚Œã‚‹ã‚ˆã†ã«
 	}
 
-	//ƒvƒƒOƒ‰ƒ€ƒIƒuƒWƒFƒNƒg‚ðƒŠƒ“ƒN‚µ‚æ‚¤
-	//ŒÂX‚ÌƒVƒF[ƒ_‚ÍƒRƒ“ƒpƒCƒ‹‚³‚ê‚Ä‚¢‚é‚ªC“‡‚³‚êŽÀs‰Â”\‚Èó‘Ô‚É‚Í‚Ü‚¾‚È‚Á‚Ä‚È‚¢
+	// çµ±åˆã—ãŸãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ãƒªãƒ³ã‚¯
 	
-	//GPU‚ªverƒVƒF[ƒ_‚Ì“ü—Í‚ðŽó‚¯Žæ‚éêŠCfragƒVƒF[ƒ_‚Ìo—Í‚³‚ê‚é‚à‚Ì‚ð“n‚·êŠ‚ðŽw’è
-	glBindAttribLocation(program, 0, "position"); //ƒXƒƒbƒg‚OC•Ï”–¼‚Ípotision
-	glBindFragDataLocation(program, 0, "fragment");
+	//(6) GPUä¸Šã§vã‚·ã‚§ãƒ¼ãƒ€ã®å…¥åŠ›å…ˆï¼Œfã‚·ã‚§ãƒ¼ãƒ€ã®å‡ºåŠ›å…ˆã‚’æŒ‡å®š
+	glBindAttribLocation(program, 0, "position");  // ID, é ‚ç‚¹å±žæ€§ã‚¹ãƒ­ãƒƒãƒˆï¼ï¼Œinå¤‰æ•°
+	glBindFragDataLocation(program, 0, "fragment"); // ID, flagå‡ºåŠ›ã‚¹ãƒ­ãƒƒãƒˆï¼Œoutå¤‰æ•°
 
-	glLinkProgram(program); //ƒŠƒ“ƒN‚µ‚Ä•¡”‚ÌƒVƒF[ƒ_ƒIƒuƒWƒFƒNƒg‚ª1‚Â‚ÌƒvƒƒOƒ‰ƒ€‚É
+	//(7) ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ãƒªãƒ³ã‚¯ï¼Žè¤‡æ•°ã®ã‚·ã‚§ãƒ¼ãƒ€ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãŒ1ã¤ã®ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã«
+	glLinkProgram(program); 
 
-	//ì¬‚µ‚½ƒvƒƒOƒ‰ƒ€ƒIƒuƒWƒFƒNƒg‚ð•Ô‚·
+	// ä½œæˆã—ãŸãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’è¿”ã™
 	return program;
 }
 
 //-------------------------------------
-// GLFW mainˆ—
+// GLFW mainå‡¦ç†
 int main()
 {
-	//(1)GLFW‚ð‰Šú‰»‚·‚éi‚±‚ÌƒvƒƒOƒ‰ƒ€‚Å OpenGL ‚ðŽg—p‚·‚é‚½‚ß‚Ì€”õj
-	//‰Šú‰»‚ÉŽ¸”s‚µ‚½ê‡‚ÍglfwInit() ‚Ì–ß‚è’l‚ª GL_FALSE‚É‚È‚é
+	//[1] GLFWã‚’åˆæœŸåŒ–ã™ã‚‹ï¼ˆã“ã®ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã§ OpenGL ã‚’ä½¿ç”¨ã™ã‚‹ãŸã‚ã®æº–å‚™ï¼‰
 	if (glfwInit() == GL_FALSE)
 	{
-		//ƒGƒ‰[—p‚Ìo—Ícerr‚ÆCƒGƒ‰[—p‚Ì–ß‚è’l1
+		// ã‚¨ãƒ©ãƒ¼ç”¨ã®å‡ºåŠ›cerrã¨ï¼Œã‚¨ãƒ©ãƒ¼ç”¨ã®æˆ»ã‚Šå€¤1
 		std::cerr << "can't initialize GLFW" << std::endl;
 		return 1;
 	}
 
-	//ƒvƒƒOƒ‰ƒ€³íI—¹Žž‚Ìˆ—‚ð“o˜^
+	//ãƒ—ãƒ­ã‚°ãƒ©ãƒ æ­£å¸¸çµ‚äº†æ™‚ã®å‡¦ç†ã‚’ç™»éŒ²
 	atexit(glfwTerminate);
 
 //---------------
-	//ƒEƒBƒ“ƒhƒE‚Ì“Á«iƒqƒ“ƒgj‚ðÝ’è
-	//ƒo[ƒWƒ‡ƒ“Žw’èi3.2j
+	// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ç‰¹æ€§ï¼ˆãƒ’ãƒ³ãƒˆï¼‰ã‚’è¨­å®š
+	// ãƒãƒ¼ã‚¸ãƒ§ãƒ³æŒ‡å®šï¼ˆ3.2ï¼‰
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 
-	//mac‚Å‚Ì‚Ý•K—v
+	// macã§ã®ã¿å¿…è¦
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); 
-	//ƒvƒƒtƒ@ƒCƒ‹Žw’èiCore Profilej
+	// ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«æŒ‡å®šï¼ˆCore Profileï¼‰
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 //---------------
-	//(2)ƒEƒBƒ“ƒhƒE‚ðì¬‚·‚é
+	//[2]ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’ä½œæˆã™ã‚‹
 	GLFWwindow *const window = glfwCreateWindow(640, 480, "window_name", NULL, NULL);
-	//const‚É‚µ‚Ä‚é‚Ì‚ÅŒã‚©‚ç window ‚É•Ê‚Ì GLFWwindow* ‚ð‘ã“ü‚µ‚½‚¢ê‡‚É–â‘è‚ªo‚é
+	// windowï¼šã‚¦ã‚£ãƒ³ãƒ‰ã‚¦æƒ…å ±ã®æ§‹é€ ä½“ã®å…ˆé ­ãƒã‚¤ãƒ³ã‚¿
+	// constã«ã—ã¦ã‚‹ã®ã§å¾Œã‹ã‚‰åˆ¥ã® GLFWwindow* ã¯ä»£å…¥ã§ããªã„
 	if (window == NULL)
 	{
-		//window‚Ìƒ|ƒCƒ“ƒ^(î•ñ‚»‚Ì‚à‚ÌCƒEƒBƒ“ƒhƒE‚Ì\‘¢‘Ì‚Ìæ“ªƒ|ƒCƒ“ƒ^)ì¬‚ÉŽ¸”s‚µ‚½ê‡
 		std::cerr << "can't create GLFW window...." << std::endl;
-		//glfwTerminate(); //Žæ“¾‚µ‚½ƒƒ‚ƒŠŠJ•ú
-		return 1;
+		return 1; // glfwTerminate()
 	}
 
-	//ì¬‚µ‚½ƒEƒBƒ“ƒhƒE‚ðƒJƒŒƒ“ƒgiOpenGL‚Ìˆ—‘ÎÛj‚É‚·‚é
+	// windowã«ç´ã¥ãã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã‚’ã‚«ãƒ¬ãƒ³ãƒˆã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆ(gl*é–¢æ•°ã®å‡¦ç†å¯¾è±¡)ã«
 	glfwMakeContextCurrent(window);
+
 	//---------------
-	//GLEW(ƒhƒ‰ƒCƒo‚ÉŠÖ”ƒ|ƒCƒ“ƒ^‚ÌŽæ“¾Žè‘±‚«‚ð‚µ‚Ä‚­‚ê‚é)‚ÍƒRƒ“ƒeƒLƒXƒg‚ÉˆË‘¶
-	//—LŒø‚ÈƒRƒ“ƒeƒLƒXƒg‚ðŒˆ‚ß‚½‚½‚ß‚±‚±‚Å‰Šú‰»
+	// GLEWåˆæœŸåŒ–(ãƒ‰ãƒ©ã‚¤ãƒã«é–¢æ•°ãƒã‚¤ãƒ³ã‚¿ã®å–å¾—æ‰‹ç¶šãï¼Œã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã«ä¾å­˜)
 	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK)
 	{
-		//GLEW‚Ì‰Šú‰»‚ÉŽ¸”s
 		std::cerr << "can't initialize GLEW" << std::endl;
 		return 1;
 	}
 	//---------------
-	//”wŒiF‚ðŽw’è
+	// èƒŒæ™¯è‰²ã‚’æŒ‡å®š
 	glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
 
-	//ƒEƒBƒ“ƒhƒEì¬Œã‚ÌV-syncÝ’è(ƒEƒBƒ“ƒhƒE‚Ìfps‚É‡‚í‚¹‚é)
+	// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ä½œæˆå¾Œã®V-syncè¨­å®š(ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®fpsã«åˆã‚ã›ã‚‹)
 	glfwSwapInterval(1);
 
-//---------------
-	//(3) ƒEƒBƒ“ƒhƒE‚ªŠJ‚¢‚Ä‚¢‚éŠÔˆ—‚ðŒJ‚è•Ô‚·
+//-------------------------------------
+	// vã‚·ã‚§ãƒ¼ãƒ€ã®ã‚½ãƒ¼ã‚¹å˜ä¸€æ–‡å­—åˆ—(GLSL)
+	static constexpr GLchar vsrc[] = // å¤–ã«æ¼ã‚‰ã•ãªã„ï¼†ãƒ“ãƒ«ãƒ‰æ™‚ã«å†…å®¹ç¢ºå®š
+		"#version 150 coreÂ¥n"
+		"in vec4 osition;Â¥n"
+		"void main()Â¥n"
+		"{Â¥n"
+		" gl_Position = position;Â¥n"
+		"}Â¥n";
+
+	// fã‚·ã‚§ãƒ¼ãƒ€ã®ã‚½ãƒ¼ã‚¹å˜ä¸€æ–‡å­—åˆ—(GLSL)
+	static constexpr GLchar fsrc[] =
+		"#version 150 coreÂ¥n"
+		"out vec4 fragment;Â¥n"
+		"void main()Â¥n"
+		"{Â¥n"
+		" fragment = vec4(1.0, 0.0, 0.0, 1.0);Â¥n"
+		"}Â¥n";
+
+
+
+
+
+//-------------------------------------
+	//[3] ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãŒé–‹ã„ã¦ã„ã‚‹é–“å‡¦ç†ã‚’ç¹°ã‚Šè¿”ã™
 	while (glfwWindowShouldClose(window) == GL_FALSE)
 	{
-		//ƒEƒBƒ“ƒhƒE‚Ì•`‰æ“à—e‚ðÁ‹Žiã‘‚«j
-		glClear(GL_COLOR_BUFFER_BIT); //ƒJƒ‰[ƒoƒbƒtƒ@‚Ì‚Ý‚ðŽw’è‚µglClearColor‚Åã‘‚«
+		// ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®æç”»å†…å®¹ã‚’æ¶ˆåŽ»ï¼ˆä¸Šæ›¸ãï¼‰
+		glClear(GL_COLOR_BUFFER_BIT); //ã‚«ãƒ©ãƒ¼ãƒãƒƒãƒ•ã‚¡ã®ã¿ã‚’æŒ‡å®šã—glClearColorã§ä¸Šæ›¸ã
 
 		//
-		//•`‰æˆ—
+		// æç”»å‡¦ç†
 		//
 
 
-		//GLFW‚Í•W€‚Åƒ_ƒuƒ‹ƒoƒbƒtƒ@‚È‚Ì‚ÅƒJƒ‰[ƒoƒbƒtƒ@‚ð“ü‚ê‘Ö‚¦‚é(‰æ–Ê•\Ž¦)
-		glfwSwapBuffers(window); //‚â‚ç‚È‚¢‚Æ•`‰æ‚¾‚¯‚Å•\Ž¦‚³‚ê‚È‚¢i‰œ‚É‚ ‚é‚Ü‚Üj
+		//[4] GLFWã¯æ¨™æº–ã§ãƒ€ãƒ–ãƒ«ãƒãƒƒãƒ•ã‚¡ãªã®ã§ã‚«ãƒ©ãƒ¼ãƒãƒƒãƒ•ã‚¡ã‚’å…¥ã‚Œæ›¿ãˆã‚‹(ç”»é¢è¡¨ç¤º)
+		glfwSwapBuffers(window); // ã‚„ã‚‰ãªã„ã¨æç”»ã ã‘ã§è¡¨ç¤ºã•ã‚Œãªã„ï¼ˆå¥¥ã«ã‚ã‚‹ã¾ã¾ï¼‰
 		
 
-		//ƒCƒxƒ“ƒg‚Ìƒ`ƒFƒbƒN
-		glfwWaitEvents(); //OS‚©‚çƒCƒxƒ“ƒgƒƒbƒZ[ƒW—ˆ‚é‚Ü‚Å•`‰æ’âŽ~(”­¶->‘Î‰ž‚·‚éƒR[ƒ‹ƒoƒbƒN‚ð”­‰Î->while•`‰ææ“ª‚Ö)
+		// ã‚¤ãƒ™ãƒ³ãƒˆã®ãƒã‚§ãƒƒã‚¯
+		glfwWaitEvents(); // OSã‹ã‚‰ã‚¤ãƒ™ãƒ³ãƒˆãƒ¡ãƒƒã‚»ãƒ¼ã‚¸æ¥ã‚‹ã¾ã§æç”»åœæ­¢(ç™ºç”Ÿ->å¯¾å¿œã™ã‚‹ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯ã‚’ç™ºç«->whileæç”»å…ˆé ­ã¸)
 	}
 }
 //-------------------------------------
